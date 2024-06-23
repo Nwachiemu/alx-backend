@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-"""Simple pagination sample.
-"""
+"""Defines the index_range func for pagination"""
+
+
+from typing import Tuple, List
 import csv
-from typing import List, Tuple
 
 
 def index_range(page: int, page_size: int) -> Tuple[int, int]:
-    """Retrieves the index range from a given page and page size.
-    """
-    start = (page - 1) * page_size
-    end = start + page_size
-    return (start, end)
+    """Calculate the start and end indexes for a pagination range."""
+    begin, end = 0, 0
+    for u in range(page):
+        begin = end
+        end += page_size
+    return (begin, end)
 
 
 class Server:
@@ -19,8 +21,6 @@ class Server:
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
-        """Initializes a new Server instance.
-        """
         self.__dataset = None
 
     def dataset(self) -> List[List]:
@@ -35,13 +35,13 @@ class Server:
         return self.__dataset
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
-        """Retrieves a page of data.
-        """
+        """Gets a page of info"""
         assert type(page) == int and type(page_size) == int
         assert page > 0 and page_size > 0
-        start, end = index_range(page, page_size)
+
+        begin, end = index_range(page, page_size)
         data = self.dataset()
-        if start > len(data):
+        if begin > len(data):
             return []
-        return data[start:end]
+        return data[begin:end]
     
